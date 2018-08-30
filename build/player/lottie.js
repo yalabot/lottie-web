@@ -88,6 +88,14 @@ function BMEnterFrameEvent(n,c,t,d){
     this.direction = d < 0 ? -1:1;
 }
 
+function BMRenderedFrameEvent(n,w,c,t,d){
+    this.type = n;
+    this.wrapper = w;
+    this.currentTime = c;
+    this.totalTime = t;
+    this.direction = d < 0 ? -1:1;
+}
+
 function BMCompleteEvent(n,d){
     this.type = n;
     this.direction = d < 0 ? -1:1;
@@ -8979,6 +8987,7 @@ AnimationItem.prototype.renderFrame = function () {
         return;
     }
     this.renderer.renderFrame(this.currentFrame + this.firstFrame);
+    this.trigger('renderedFrame')
 };
 
 AnimationItem.prototype.play = function (name) {
@@ -9248,6 +9257,9 @@ AnimationItem.prototype.trigger = function(name){
             case 'enterFrame':
                 this.triggerEvent(name,new BMEnterFrameEvent(name,this.currentFrame,this.totalFrames,this.frameMult));
                 break;
+            case 'renderedFrame':
+                this.triggerEvent(name,new BMRenderedFrameEvent(name,this.wrapper,this.currentFrame,this.totalFrames,this.frameMult));
+                break;
             case 'loopComplete':
                 this.triggerEvent(name,new BMCompleteLoopEvent(name,this.loop,this.playCount,this.frameMult));
                 break;
@@ -9266,6 +9278,9 @@ AnimationItem.prototype.trigger = function(name){
     }
     if(name === 'enterFrame' && this.onEnterFrame){
         this.onEnterFrame.call(this,new BMEnterFrameEvent(name,this.currentFrame,this.totalFrames,this.frameMult));
+    }
+    if(name === 'renderedFrame' && this.onRenderedFrame) {
+        this.onRenderedFrame.call(this,new BMRenderedFrameEvent(name,this.wrapper,this.currentFrame,this.totalFrames,this.frameMult));
     }
     if(name === 'loopComplete' && this.onLoopComplete){
         this.onLoopComplete.call(this,new BMCompleteLoopEvent(name,this.loop,this.playCount,this.frameMult));
@@ -14061,4 +14076,4 @@ GroupEffect.prototype.init = function(data,element){
     }
     var readyStateCheckInterval = setInterval(checkReady, 100);
     return lottiejs;
-}));
+}));
