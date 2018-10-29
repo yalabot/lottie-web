@@ -74,6 +74,7 @@ function BMRenderedFrameEvent(n,w,c,t,d){
     this.wrapper = w;
     this.currentTime = c;
     this.totalTime = t;
+    this.frameMult = d;
     this.direction = d < 0 ? -1:1;
 }
 
